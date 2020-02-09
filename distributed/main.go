@@ -2,27 +2,33 @@ package main
 
 import (
 	"crawler/distributed/config"
+	"crawler/distributed/persist/cilent"
+	"crawler/distributed/worker/client"
 	"crawler/engine"
-	"crawler/persist"
 	"crawler/schduler"
 	"crawler/zhenai/parser"
+	"fmt"
 )
 
 func main() {
-	itemChan, err := persist.ItemSaver("dating_profile")
+	itemChan, err := cilent.ItemSaver(fmt.Sprintf(":%d", config.ItemSaverPort))
+	if err != nil {
+		panic(err)
+	}
+
+	processor, err := client.CreateProcessor()
 	if err != nil {
 		panic(err)
 	}
 	e := engine.ConcurrentEngine{
-		//Scheduler: &schduler.SimpleScheduler{},
 		Scheduler:        &schduler.QueuedScheduler{},
 		WorkerCount:      100,
 		ItemChan:         itemChan,
-		RequestProcessor: engine.Worker,
+		RequestProcessor: processor,
 	}
 
 	//e.Run(engine.Request{
-	//	Url:        "https://www.zhenai.com/zhenghun",
+	//	Url:    "https://www.zhenai.com/zhenghun",
 	//	Parser: engine.NewFuncParser(parser.ParseCityList, "ParseCityList"),
 	//})
 
