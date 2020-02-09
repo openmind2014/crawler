@@ -11,10 +11,13 @@ type ReadyNotifier interface {
 	WorkerReady(chan Request)
 }
 
+type Processor func(Request) (ParseResult, error)
+
 type ConcurrentEngine struct {
-	Scheduler   Scheduler
-	WorkerCount int
-	ItemChan    chan Item
+	Scheduler        Scheduler
+	WorkerCount      int
+	ItemChan         chan Item
+	RequestProcessor Processor
 }
 
 func (e *ConcurrentEngine) Run(seeds ...Request) {
@@ -22,7 +25,7 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	e.Scheduler.Run()
 
 	for i := 0; i < e.WorkerCount; i++ {
-		createWorker(e.Scheduler.WorkerChan(), out, e.Scheduler)
+		e.createWorker(e.Scheduler.WorkerChan(), out, e.Scheduler)
 	}
 
 	for _, r := range seeds {
@@ -56,12 +59,12 @@ func isDuplicate(url string) bool {
 	return false
 }
 
-func createWorker(in chan Request, out chan ParseResult, ready ReadyNotifier) {
+func (e *ConcurrentEngine) createWorker(in chan Request, out chan ParseResult, ready ReadyNotifier) {
 	go func() {
 		for {
 			ready.WorkerReady(in)
 			request := <-in
-			result, err := worker(request)
+			result, err := e.RequestProcessor(request)
 			if err != nil {
 				continue
 			}

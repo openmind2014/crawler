@@ -9,13 +9,13 @@ import (
 )
 
 func ItemSaver(index string) (chan engine.Item, error) {
-	//client, err := elastic.NewClient(
-	//	// Must turn off sniff in docker
-	//	elastic.SetSniff(false))
-	//
-	//if err != nil {
-	//	return nil, err
-	//}
+	client, err := elastic.NewClient(
+		// Must turn off sniff in docker
+		elastic.SetSniff(false))
+
+	if err != nil {
+		return nil, err
+	}
 
 	out := make(chan engine.Item)
 	go func() {
@@ -25,10 +25,10 @@ func ItemSaver(index string) (chan engine.Item, error) {
 			log.Printf("Item saver: #%d: %v", itemCount, item.Payload)
 			itemCount++
 
-			//err := Save(client, index, item)
-			//if err != nil {
-			//	log.Printf("Item saver: error saving item %v: %v:", item, err)
-			//}
+			err := Save(client, index, item)
+			if err != nil {
+				log.Printf("Item saver: error saving item %v: %v:", item, err)
+			}
 		}
 	}()
 	return out, nil
