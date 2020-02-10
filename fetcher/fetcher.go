@@ -2,6 +2,7 @@ package fetcher
 
 import (
 	"bufio"
+	"crawler/distributed/config"
 	get "crawler/http"
 	"fmt"
 	"golang.org/x/net/html/charset"
@@ -18,10 +19,11 @@ var headers = map[string]string{
 	"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36",
 }
 
-var rateLimiter = time.Tick(100 * time.Millisecond)
+var rateLimiter = time.Tick(time.Second / config.Qps)
 
 func Fetch(url string) ([]byte, error) {
 	<-rateLimiter
+	log.Printf("Fetching url: %s", url)
 	resp, err := get.Do(url, headers)
 	if err != nil {
 		return nil, err
