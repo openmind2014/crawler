@@ -4,6 +4,8 @@
 
     docker run -d -p 9200:9200 elasticsearch
 
+    cd distributed
+
     go run persist/server/itemsaver.go -port 9000
     go run worker/server/worker.go -port 9001
     go run worker/server/worker.go -port 9002
