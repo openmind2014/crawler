@@ -6,7 +6,7 @@ import (
 	"crawler/distributed/rpcsupport"
 	"crawler/distributed/worker/client"
 	"crawler/engine"
-	"crawler/schduler"
+	"crawler/scheduler"
 	"crawler/zhenai/parser"
 	"flag"
 	"log"
@@ -30,7 +30,7 @@ func main() {
 	processor := client.CreateProcessor(pool)
 
 	e := engine.ConcurrentEngine{
-		Scheduler:        &schduler.QueuedScheduler{},
+		Scheduler:        &scheduler.QueuedScheduler{},
 		WorkerCount:      100,
 		ItemChan:         itemChan,
 		RequestProcessor: processor,

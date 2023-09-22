@@ -4,7 +4,7 @@ import (
 	"crawler/distributed/config"
 	"crawler/engine"
 	"crawler/persist"
-	"crawler/schduler"
+	"crawler/scheduler"
 	"crawler/zhenai/parser"
 )
 
@@ -14,8 +14,8 @@ func main() {
 		panic(err)
 	}
 	e := engine.ConcurrentEngine{
-		//Scheduler: &schduler.SimpleScheduler{},
-		Scheduler:        &schduler.QueuedScheduler{},
+		//Scheduler: &scheduler.SimpleScheduler{},
+		Scheduler:        &scheduler.QueuedScheduler{},
 		WorkerCount:      100,
 		ItemChan:         itemChan,
 		RequestProcessor: engine.Worker,
