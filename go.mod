@@ -3,8 +3,8 @@ module crawler
 go 1.20
 
 require (
-	golang.org/x/net v0.17.0
-	golang.org/x/text v0.13.0
+	golang.org/x/net v0.23.0
+	golang.org/x/text v0.14.0
 	gopkg.in/olivere/elastic.v5 v5.0.84
 )
 
