@@ -1,10 +1,11 @@
 module crawler
 
 go 1.20
+toolchain go1.24.1
 
 require (
-	golang.org/x/net v0.33.0
-	golang.org/x/text v0.21.0
+	golang.org/x/net v0.36.0
+	golang.org/x/text v0.22.0
 	gopkg.in/olivere/elastic.v5 v5.0.84
 )
 
